@@ -1,0 +1,22 @@
+#hideui-options-panel {
+  display: none;
+  position: relative;
+  top: -50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 380px;
+  width: 250px;
+
+  background-color: rgba(29, 29, 32, .8);
+  color: #bfbfbf;
+  border-radius: 4px;
+  border: 1px solid rgba(60, 60, 60, .83);
+  line-height: 3;
+  z-index: 1;
+
+  font-size: 14px;
+  padding: 20px;
+  border-color: #e4e1e1;
+  font-weight: 400;
+  word-spacing: 2px;
+}
