@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Hide UI
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1.0
+// @version      1.0.1.1
 // @description  Hides/shows all elements of the UI
 // @author       Krzysztof Kruk
 // @match        https://*.eyewire.org/*
@@ -123,7 +123,7 @@ if (LOCAL) {
     K.gid('hideui-top-bar').checked = states.topBar;
     K.gid('hideui-chat').checked = states.chat;
     K.gid('hideui-cell-selector').checked = states.celSelector;
-    K.gid('hideui-leaderboard').checked = states.leaderBoard;
+    K.gid('hideui-leaderboard').checked = states.leaderboard;
     K.gid('hideui-bottom-bar').checked = states.bottomBar;
     K.gid('hideui-cubes').checked = states.cubes;
 
