@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Hide UI
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0.0
+// @version      1.0.1.0
 // @description  Hides/shows all elements of the UI
 // @author       Krzysztof Kruk
 // @match        https://*.eyewire.org/*
@@ -38,6 +38,25 @@ if (LOCAL) {
 
     addCSSFile: function (path) {
       $("head").append('<link href="' + path + '" rel="stylesheet" type="text/css">');
+    },
+
+    
+    // Source: https://stackoverflow.com/a/6805461
+    injectJS: function (text, sURL) {
+      var
+        tgt,
+        scriptNode = document.createElement('script');
+
+      scriptNode.type = "text/javascript";
+      if (text) {
+        scriptNode.textContent = text;
+      }
+      if (sURL) {
+        scriptNode.src = sURL;
+      }
+
+      tgt = document.getElementsByTagName('head')[0] || document.body || document.documentElement;
+      tgt.appendChild(scriptNode);
     },
 
 
@@ -178,11 +197,35 @@ if (LOCAL) {
     createPanel();
     readSettings();
 
+    
+    // source: https://stackoverflow.com/a/10828021
+    K.injectJS(`
+    $(window)
+      .on('cube-enter', function () {
+        $(document).trigger('hide-ui.cube-entered');
+      })
+      .on('cube-leave', function (e, data) {
+        $(document).trigger('hide-ui.cube-leaved');
+      });
+  `);
+
     $(document).on('keypress', function (e) {
       if (e.key == '.') {
         changeOptionsPanelVisibility();
       }
     });
+
+    $(document)
+      .on('hide-ui.cube-entered', function () {
+        if (states.bottomBar) {
+          changeBottomBar(false, false);
+        }
+      })
+      .on('hide-ui.cube-leaved', function () {
+        if (states.bottomBar) {
+          changeBottomBar(true, false);
+        }
+      });
 
     K.gid('hideui-top-bar').addEventListener('change', function () {
       changeTopBar(this.checked);
@@ -243,7 +286,7 @@ if (LOCAL) {
       <label><input type=checkbox id=hideui-cell-selector> hide cell selector</label><br>
       <label><input type=checkbox id=hideui-leaderboard> hide leaderboard</label><br>
       <label><input type=checkbox id=hideui-bottom-bar> hide bottom bar</label><br>
-      <label><input type=checkbox id=hideui-scoutslog> hide Scouts' Log Controls</label></br>
+      <label><input type=checkbox id=hideui-scoutslog> hide Scouts' Log controls</label></br>
       <label><input type=checkbox id=hideui-cubes> hide Cubes (if installed)</label><br>
       <br>
       <label><input type=checkbox id=hideui-all> hide all</label><br>
@@ -294,15 +337,17 @@ if (LOCAL) {
     saveSettings();
   }
 
-  function changeBottomBar(state) {
+  function changeBottomBar(state, saveState = true) {
     K.qS('.gameBar').style.display = state ? 'none' : 'block';
     K.gid('gameControls').style.visibility = state ? 'hidden' : 'visible';
     K.gid('cubeInspector').style.visibility = state ? 'hidden' : 'visible';
 
-    states.bottomBar = state;
+    if (saveState) {
+      states.bottomBar = state;
 
-    checkAllIfAllChecked();
-    saveSettings();
+      checkAllIfAllChecked();
+      saveSettings();
+    }
   }
 
   function changeScoutsLog(state) {
