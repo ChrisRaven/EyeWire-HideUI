@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Hide UI
 // @namespace    http://tampermonkey.net/
-// @version      1.0.1.1
+// @version      1.1.0.0
 // @description  Hides/shows all elements of the UI
 // @author       Krzysztof Kruk
 // @match        https://*.eyewire.org/*
@@ -185,7 +185,6 @@ if (LOCAL) {
       }
     }, 100);
 
-
   }
 
   function saveSettings() {
@@ -342,6 +341,19 @@ if (LOCAL) {
     K.gid('gameControls').style.visibility = state ? 'hidden' : 'visible';
     K.gid('cubeInspector').style.visibility = state ? 'hidden' : 'visible';
 
+    let jumpButton = K.gid('rootJumpButton');
+    if (jumpButton) {
+      jumpButton.style.visibility = state ? 'hidden' : 'visible';
+    }
+
+    K.gid('chatContainer').style.setProperty('bottom', state ? '10px' : '60px', 'important');
+    
+    let cubes = K.gid('ews-cubes-panel');
+    if (cubes) {
+      cubes.style.setProperty('bottom', state ? '-50px' : '20px', 'important');
+    }
+
+    // to show the bar when playing or inspecting a cube and hide it afterwards
     if (saveState) {
       states.bottomBar = state;
 
